@@ -134,7 +134,7 @@ router.get("/user/:user_id", async (req, fres, next) => {
 
 //delete profile
 
-router.delete("/", auth, async (req, fres, next) => {
+router.delete("/", auth, async (req, res, next) => {
   try {
     // remove profile code
     await Profile.findOneAndRemove({ user: req.user.id });
@@ -190,18 +190,38 @@ router.put(
     };
 
     try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.experience.unshift(newExp);
+      await profile.save();
 
-        const profile = await Profile.findOne({user: req.user.id});
-        profile.experience.unshift(newExp);
-        await profile.save();
-
-        res.json(profile);
-
+      res.json(profile);
     } catch (error) {
       console.log(error.message);
       res.status(500).json({ msg: "server error" });
     }
   }
 );
+
+// delete experience from profile
+router.delete("/experience/:exp_id", auth, async (req, res, next) => {
+  try {
+    // remove profile code
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    // Get the remove index
+    const removeIndex = profile.experience
+      .map((item) => item.id)
+      .indexOf(req.params.exp_id);
+
+    profile.experience.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ msg: "server error" });
+  }
+});
 
 module.exports = router;
