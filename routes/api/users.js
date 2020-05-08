@@ -66,7 +66,7 @@ router.post(
         }
       );
 
-      res.status(200).send("user registered successfuly");
+     // res.status(200).send("user registered successfuly");
     } catch (error) {
       return next(error);
     }
