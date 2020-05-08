@@ -224,4 +224,87 @@ router.delete("/experience/:exp_id", auth, async (req, res, next) => {
   }
 });
 
+
+
+
+//Adding additinal data education to profile
+
+router.put(
+    "/education",
+    [
+      auth,
+      [
+        check("school", "school is req").not().isEmpty(),
+        check("degree", "degree is req").not().isEmpty(),
+        check("field", "field is req").not().isEmpty(),
+        check("From Date", "From Date is req").not().isEmpty(),
+      ],
+    ],
+    async (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      // getting values for adding exp from req.body
+      const {
+        school,
+        degree,
+        field,
+        from,
+        to,
+        current,
+        description,
+      } = req.body;
+      // using values to store add the data
+  
+      const newEdu = {
+        school,
+        degree,
+        field,
+        from,
+        to,
+        current,
+        description,
+      };
+  
+      try {
+        const profile = await Profile.findOne({ user: req.user.id });
+        profile.education.unshift(newEdu);
+        await profile.save();
+  
+        res.json(profile);
+      } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ msg: "server error" });
+      }
+    }
+  );
+  
+  // delete education from profile
+  router.delete("/education/:edu_id", auth, async (req, res, next) => {
+    try {
+      // remove profile code
+      const profile = await Profile.findOne({ user: req.user.id });
+  
+      // Get the remove index
+      const removeIndex = profile.education
+        .map((item) => item.id)
+        .indexOf(req.params.edu_id);
+  
+      profile.experience.splice(removeIndex, 1);
+  
+      await profile.save();
+  
+      res.json(profile);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ msg: "server error" });
+    }
+  });
+
+
+
+
+
 module.exports = router;
