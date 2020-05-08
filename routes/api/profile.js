@@ -132,4 +132,76 @@ router.get("/user/:user_id", async (req, fres, next) => {
   }
 });
 
+//delete profile
+
+router.delete("/", auth, async (req, fres, next) => {
+  try {
+    // remove profile code
+    await Profile.findOneAndRemove({ user: req.user.id });
+
+    // remove user
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    res.json({ msg: "User removed" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ msg: "server error" });
+  }
+});
+
+//Adding additinal data (experience)to profile
+
+router.put(
+  "/experience",
+  [
+    auth,
+    [
+      check("title", "title is req").not().isEmpty(),
+      check("company", "company is req").not().isEmpty(),
+      check("From Date", "From Date is req").not().isEmpty(),
+    ],
+  ],
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // getting values for adding exp from req.body
+    const {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    } = req.body;
+    // using values to store add the data
+
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+
+        const profile = await Profile.findOne({user: req.user.id});
+        profile.experience.unshift(newExp);
+        await profile.save();
+
+        res.json(profile);
+
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ msg: "server error" });
+    }
+  }
+);
+
 module.exports = router;
