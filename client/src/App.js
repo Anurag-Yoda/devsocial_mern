@@ -14,6 +14,7 @@ import Alert from "./components/layout/Alert";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import CreateProfile from "./components/profile-forms/CreateProfile";
+import EditProfile from "./components/profile-forms/EditProfile";
 
 
 
@@ -40,6 +41,7 @@ const App = () => {
               <Route path="/login" exact component={Login} />
               <PrivateRoute path="/dashboard" exact component={Dashboard} />
               <PrivateRoute path="/create-profile" exact component={CreateProfile} />
+              <PrivateRoute path="/edit-profile" exact component={EditProfile} />
             </Switch>
           </section>
         </Fragment>
