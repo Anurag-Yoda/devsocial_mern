@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 const Landing = ({isAuthenticated}) => {
 
@@ -40,4 +41,4 @@ const mapStateToProps =state => ({
 
 
 
-export default conncect(mapStateToProps)(Landing);
+export default connect(mapStateToProps)(Landing);

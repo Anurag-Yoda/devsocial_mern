@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect , useState} from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createProfile, getCurrentProfile } from "../../actions/profile";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 
 const EditProfile = ({
   profile: { profile, loading },
@@ -10,7 +10,7 @@ const EditProfile = ({
   getCurrentProfile,
   history,
 }) => {
-  const [formData, setformData] = useState({
+  const [formData, setFormData] = useState({
     company: "",
     website: "",
     location: "",
@@ -31,7 +31,7 @@ const EditProfile = ({
   useEffect(() => {
     if (!profile) getCurrentProfile();
     if (!loading && profile) {
-      const profileData = { ...initialState };
+      const profileData = { ...formData };
       for (const key in profile) {
         if (key in profileData) profileData[key] = profile[key];
       }

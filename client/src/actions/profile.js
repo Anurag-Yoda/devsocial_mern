@@ -1,8 +1,8 @@
 import axios from "axios";
 import { setAlert } from "./alert";
 
-import { GET_PROFILE, PROFILE_ERROR, UPDATE_PROFILE, ACCOUNT_DELETED, GET_REPOS } from "./types";
-import axios from "axios";
+import { GET_PROFILE, PROFILE_ERROR, UPDATE_PROFILE, ACCOUNT_DELETED, GET_REPOS, GET_PROFILES, NO_REPOS, CLEAR_PROFILE } from "./types";
+
 
 //Get current user profile
 
@@ -47,7 +47,7 @@ export const createProfile = (formData, history, edit = false) => async (
       history.push('/dashboard');
     }
   } catch (error) {
-    const errors = err.response.data.errors;
+    const errors = error.response.data.errors;
     if (errors) {
       errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
     }
@@ -237,3 +237,8 @@ export const getGithubRepos = username => async dispatch => {
     });
   }
 };
+
+
+
+
+
